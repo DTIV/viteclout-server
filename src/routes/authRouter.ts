@@ -1,13 +1,17 @@
 import express from "express";
+import passport from "passport";
 
 const router = express.Router();
 
-router.get("/twitter", async (req, res) => {
-  try {
-    return res.status(201).send("hello");
-  } catch (err) {
-    console.log(err);
+router.get("/twitter", passport.authenticate("twitter"));
+
+router.get(
+  "/twitter/callback",
+  passport.authenticate("twitter", { failureRedirect: "/login" }),
+  function () {
+    // Successful authentication, redirect home.
+    // res.redirect("/");
   }
-});
+);
 
 export default router;

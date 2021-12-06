@@ -1,4 +1,4 @@
-import User from "../models/user";
+import User from "../../models/user";
 
 export const addUser = async (twitterId: string, description: string) => {
   try {
