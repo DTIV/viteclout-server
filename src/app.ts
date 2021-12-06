@@ -6,7 +6,8 @@ import bodyParser from "body-parser";
 import authRouter from "./routes/authRouter";
 import healthRouter from "./routes/healthRouter";
 import { intitPassportTwitter } from "./controller/auth/passportTwitter";
-const session = require("express-session");
+import session from "express-session";
+require("dotenv").config();
 
 const { PORT } = config;
 
@@ -16,12 +17,12 @@ const app = express();
 // Middlewares
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(session({ secret: "melody hensley is my spirit animal" }));
+app.use(session({ secret: process.env.SESSION_SECRET as string }));
 
 // Registering routes
 app.use("/user", userRouter);
 app.use("/auth", authRouter);
-app.use("/health", healthRouter);
+app.use("", healthRouter);
 
 // Initalising passport twitter
 intitPassportTwitter();

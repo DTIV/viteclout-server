@@ -2,7 +2,7 @@ import express from "express";
 
 const router = express.Router();
 
-router.get("/check", async (req, res) => {
+router.get("", async (req, res) => {
   try {
     return res.status(201).send("Server is up");
   } catch (err) {
