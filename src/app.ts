@@ -3,6 +3,7 @@ import config from "./config";
 import userRouter from "./routes/userRouter";
 import connectToDB from "./service/db";
 import bodyParser from "body-parser";
+import authRouter from "./routes/authRouter";
 
 const { PORT } = config;
 
@@ -10,7 +11,9 @@ const app = express();
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
 app.use("/user", userRouter);
+app.use("/auth", authRouter);
 
 app.get("/health", (req, res) => {
   res.send("healthy");
