@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
+import config from "../config";
 
-const DB_URL =
-  "mongodb://localhost:27017/?readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false";
+const { MONGO_DB_URL } = config;
 
 const connectToDB = async () => {
   try {
-    await mongoose.connect(DB_URL);
+    await mongoose.connect(MONGO_DB_URL);
     console.log("Connecter to DB");
   } catch (err) {
     console.log("Error while connecting to DB");
