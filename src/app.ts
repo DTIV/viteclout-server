@@ -5,6 +5,7 @@ import connectToDB from "./service/db";
 import bodyParser from "body-parser";
 import authRouter from "./routes/authRouter";
 import healthRouter from "./routes/healthRouter";
+import tokenRouter from "./routes/tokenRouter";
 import { intitPassportTwitter } from "./controller/auth/passportTwitter";
 import session from "express-session";
 require("dotenv").config();
@@ -22,6 +23,7 @@ app.use(session({ secret: process.env.SESSION_SECRET as string }));
 // Registering routes
 app.use("/user", userRouter);
 app.use("/auth", authRouter);
+app.use("/token", tokenRouter);
 app.use("", healthRouter);
 
 // Initalising passport twitter

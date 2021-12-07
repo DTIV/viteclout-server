@@ -7,11 +7,7 @@ router.get("/twitter", passport.authenticate("twitter"));
 
 router.get(
   "/twitter/callback",
-  passport.authenticate("twitter", { failureRedirect: "/login" }),
-  function () {
-    // Successful authentication, redirect home.
-    // res.redirect("/");
-  }
+  passport.authenticate("twitter", { failureRedirect: "/login" })
 );
 
 export default router;
