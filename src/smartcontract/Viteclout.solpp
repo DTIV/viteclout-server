@@ -1,5 +1,5 @@
 pragma soliditypp ^0.4.2;
-contract HelloWorld {
+contract Viteclout {
    event transfer(address indexed addr,uint amount);
      onMessage SayHello(address addr) payable {
         addr.transfer(msg.tokenid ,msg.amount);
