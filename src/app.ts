@@ -8,6 +8,9 @@ import healthRouter from "./routes/healthRouter";
 import tokenRouter from "./routes/tokenRouter";
 import { intitPassportTwitter } from "./controller/auth/passportTwitter";
 import session from "express-session";
+import passport from "passport";
+
+
 
 require("dotenv").config();
 
@@ -28,6 +31,9 @@ app.use("/token", tokenRouter);
 app.use("", healthRouter);
 
 // Initalising passport twitter
+app.use(passport.initialize());
+app.use(passport.session());
+
 intitPassportTwitter();
 
 // Connecting to MongoDB
