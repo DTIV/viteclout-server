@@ -2,7 +2,6 @@ import express from "express";
 import userController from "../controller/user/userController";
 import User from "../models/user";
 
-
 const router = express.Router();
 
 // ADD USER
@@ -26,10 +25,10 @@ router.get('/list', function (req, res) {
       res.status(401).json(err);
     }
   })
-})
+});
 
 // UPDATE USER
-router.put("/:id", async (req, res) => {
+router.put("/update/:id", async (req, res) => {
   if(req.body.userId === req.params.id){
     try{
       const updatedUser = await User.findByIdAndUpdate(req.params.id,{
@@ -43,6 +42,20 @@ router.put("/:id", async (req, res) => {
   }else{
     res.status(401).json("Failed!");
   }
-})
+});
+
+// DELETE USER
+router.delete("/delete/:id", async (req, res) => {
+  if(req.body.userId === req.params.id){
+    try{
+      await User.findByIdAndDelete(req.params.id)
+      res.status(200).json("User has been deleted!")
+    }catch (err) {
+      res.status(500).json(err);
+    }
+  }else{
+    res.status(401).json("Failed!");
+  }
+});
 
 export default router;
