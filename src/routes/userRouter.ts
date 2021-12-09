@@ -37,8 +37,6 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-
-
 // UPDATE USER
 router.put("/update/:id", async (req, res) => {
   if(req.body.userId === req.params.id){
