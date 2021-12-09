@@ -1,16 +1,48 @@
 import express from "express";
 import userController from "../controller/user/userController";
+import User from "../models/user";
+
 
 const router = express.Router();
 
+// ADD USER
 router.post("/add", async (req, res) => {
   try {
     const { twitterId, isVuilder, profilePic, header, blog, github } = req.body;
+    console.log(req.body)
     const id = await userController.addUser(twitterId, isVuilder, profilePic, header, blog, github);
     return res.status(201).send(id);
   } catch (err) {
     console.log(err);
   }
 });
+
+// GET ALL USERS
+router.get('/list', function (req, res) {
+  User.find({}, function (err, users) {
+    if(!err){
+      res.json(users)
+    }else{
+      res.status(401).json(err);
+    }
+  })
+})
+
+// UPDATE USER
+router.put("/:id", async (req, res) => {
+  if(req.body.userId === req.params.id){
+    try{
+      const updatedUser = await User.findByIdAndUpdate(req.params.id,{
+        $set: req.body
+      }, 
+      {new: true})
+      res.status(200).json(updatedUser)
+    }catch (err) {
+      res.status(500).json(err);
+    }
+  }else{
+    res.status(401).json("Failed!");
+  }
+})
 
 export default router;

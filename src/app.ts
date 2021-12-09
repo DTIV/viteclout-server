@@ -20,6 +20,7 @@ const { PORT } = config;
 const app = express();
 
 // Middlewares
+app.use(express.json())
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(session({ secret: process.env.SESSION_SECRET as string }));
