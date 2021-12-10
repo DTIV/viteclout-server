@@ -21,16 +21,20 @@ export const findOrCreate = async (twitterId: string) => {
   }
 };
 
-export const addUser = async (twitterId: string, description: string) => {
+export const addUser = async (twitterId: string, isVuilder: boolean, profilePic: string, header: string, blog: string, github: string) => {
   try {
     const newUser = new User({
       twitterId,
-      description,
+      isVuilder,
+      profilePic,
+      header,
+      blog,
+      github
     });
     const res = await newUser.save();
     return res._id;
   } catch (err) {
-    console.log("Error while adding to db");
+    console.log("Error while adding to db", err);
   }
 };
 
