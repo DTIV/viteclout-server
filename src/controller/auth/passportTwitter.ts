@@ -19,8 +19,6 @@ export const intitPassportTwitter = () => {
         userController.findOrCreate(profile.id);
       }
     )
-
   );
-  console.log("HERE")
 };
 //http://localhost:3000/auth/twitter/callback
