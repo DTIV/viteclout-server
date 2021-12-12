@@ -10,21 +10,26 @@ const userSchema = new mongoose.Schema(
     isVuilder: {
       type: Boolean,
       default: false,
+      required: true
     },
     profilePic: {
       type: String,
       default: "",
+      required: false
     },
     header: {
       type: String,
+      default: "",
       required:false,
     },
     blog: {
       type: String,
-      required: false,
+      default: "",
+      required: false
     },
     github: {
       type:String,
+      default: "",
       required: false
     }
   },
