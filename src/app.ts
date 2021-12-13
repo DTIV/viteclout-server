@@ -10,6 +10,7 @@ import { intitPassportTwitter } from "./controller/auth/passportTwitter";
 import session from "express-session";
 import passport from "passport";
 import multer from "multer";
+import path from 'path';
 
 require("dotenv").config();
 
@@ -25,6 +26,8 @@ app.use(bodyParser.json());
 app.use(session({ secret: process.env.SESSION_SECRET as string }));
 
 // PROFILE PICTURE UPLOAD
+app.use("/images", express.static(path.join(__dirname, "/images")))
+
 const storage = multer.diskStorage({
   destination:(req,file,cb) => {
     cb(null,"src/images")
