@@ -14,12 +14,20 @@ import path from 'path';
 
 require("dotenv").config();
 
+const cors = require('cors')
+
 const { PORT } = config;
 
 // Create express app
 const app = express();
 
 // Middlewares
+app.use(
+  cors({
+    origin: '*',
+  })
+)
+
 app.use(express.json())
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
