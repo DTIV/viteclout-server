@@ -9,7 +9,7 @@ router.get(
   "/twitter/callback",
   passport.authenticate("twitter", { 
     failureRedirect: "/login",
-    successRedirect: '/',
+    // successRedirect: '/',
   })
 );
 
