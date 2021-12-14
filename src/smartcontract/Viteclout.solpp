@@ -4,16 +4,33 @@ contract VuilderToken {
    address public vuilder;
    mapping(address => uint) public balances;
    uint circulatingSupply = 0;
+   uint decimals = 1000000000000000000;
 
    constructor() public {
       vuilder = msg.sender;
-      balances[vuilder] = 1000;
+      balances[vuilder] = 1000 * decimals;
+   }
+
+   getter getPrice(uint amount, address receiver, address sender) returns(uint) {
+     if(circulatingSupply==0) {
+         return (decimals * 3)/1000;
+      }
+
+      uint newCirculatingSupply = circulatingSupply;
+
+      if(sender == vuilder && receiver!= vuilder) {
+         newCirculatingSupply += amount;
+      } else if(receiver == vuilder && sender != vuilder) {
+         newCirculatingSupply -= amount;
+      }
+
+      return  (3 * (newCirculatingSupply)**2)/1000;
    }
 
    onMessage sendToken(address receiver, uint amount) payable {
       require(amount <= balances[msg.sender], "Insufficient balance");
       // Enforces the price of token
-      require(msg.amount == getPrice(amount, receiver, msg.sender));
+      require(msg.amount == _getPrice(amount, receiver, msg.sender));
 
       balances[msg.sender] -= amount;
       balances[receiver] += amount;
@@ -33,7 +50,11 @@ contract VuilderToken {
       return circulatingSupply;
    }
 
-   function getPrice(uint amount, address receiver, address sender) public returns(uint) {
+   function _getPrice(uint amount, address receiver, address sender) private returns(uint) {
+      if(circulatingSupply==0) {
+         return (decimals * 3)/1000;
+      }
+
       uint newCirculatingSupply = circulatingSupply;
 
       if(sender == vuilder && receiver!= vuilder) {
