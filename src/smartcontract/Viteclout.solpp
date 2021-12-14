@@ -1,25 +1,45 @@
 pragma soliditypp ^0.4.2;
 
-contract SocialToken {
-   address public minter;
+contract VuilderToken {
+   address public vuilder;
    mapping(address => uint) public balances;
+   uint circulatingSupply = 0;
 
    constructor() public {
-      minter = msg.sender;
-   }
-
-   onMessage mintToken(address receiver, uint amount) {
-      require(msg.sender == minter);
-      balances[receiver] += amount;
+      vuilder = msg.sender;
+      balances[vuilder] = 1000;
    }
 
    onMessage sendToken(address receiver, uint amount) {
       require(amount <= balances[msg.sender], "Insufficient balance");
+
       balances[msg.sender] -= amount;
       balances[receiver] += amount;
+
+      if(msg.sender == vuilder && receiver!= vuilder) {
+         circulatingSupply += amount;
+      } else if(receiver == vuilder && msg.sender != vuilder) {
+         circulatingSupply -= amount;
+      }
    }
 
    getter getBalanceOf(address _address) returns(uint) {
       return balances[_address];
+   }
+
+   getter getCirculatingSupply() returns(uint) {
+      return circulatingSupply;
+   }
+
+   function getPrice(uint amount, address receiver) public returns(uint) {
+      uint newCirculatingSupply = circulatingSupply;
+
+      if(msg.sender == vuilder && receiver!= vuilder) {
+         newCirculatingSupply += amount;
+      } else if(receiver == vuilder && msg.sender != vuilder) {
+         newCirculatingSupply -= amount;
+      }
+
+      return  (3 * (newCirculatingSupply)**2)/1000;
    }
 }
