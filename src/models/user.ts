@@ -5,33 +5,38 @@ const userSchema = new mongoose.Schema(
     twitterId: {
       type: String,
       required: true,
-      unique: true
+      unique: true,
     },
     isVuilder: {
       type: Boolean,
       default: false,
-      required: true
+      required: true,
     },
     profilePic: {
       type: String,
       default: "",
-      required: false
+      required: false,
     },
     header: {
       type: String,
       default: "",
-      required:false,
+      required: false,
     },
     blog: {
       type: String,
       default: "",
-      required: false
+      required: false,
     },
     github: {
-      type:String,
+      type: String,
       default: "",
-      required: false
-    }
+      required: false,
+    },
+    isTokenCreated: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
   },
   { timestamps: true }
 );
