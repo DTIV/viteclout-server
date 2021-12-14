@@ -42,6 +42,8 @@ contract VuilderToken {
          newCirculatingSupply -= amount;
       }
 
+      require(newCirculatingSupply !=0);
+
       return  (3 * (newCirculatingSupply)**2)/1000;
    }
 }
