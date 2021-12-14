@@ -31,7 +31,11 @@ app.use(
 app.use(express.json())
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(session({ secret: process.env.SESSION_SECRET as string }));
+app.use(session({ 
+  secret: process.env.SESSION_SECRET as string, 
+  resave: true, 
+  saveUninitialized: true 
+}));
 
 // PROFILE PICTURE UPLOAD
 app.use("/images", express.static(path.join(__dirname, "/images")))

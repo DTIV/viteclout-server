@@ -27,6 +27,7 @@
     "nodemon": "^2.0.15",
     "passport": "^0.5.0",
     "passport-twitter": "^1.0.4",
+    "passport-twitter-oauth2": "^2.1.1",
     "path": "^0.12.7",
     "ts-node": "^10.4.0"
   },
