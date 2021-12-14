@@ -5,6 +5,7 @@ contract VuilderToken {
    mapping(address => uint) public balances;
    uint circulatingSupply = 0;
    uint decimals = 1000000000000000000;
+   // uint paid = 0;
 
    constructor() public {
       vuilder = msg.sender;
@@ -67,4 +68,12 @@ contract VuilderToken {
 
       return  (3 * (newCirculatingSupply)**2)/1000;
    }
+
+   // onMessage pay() payable {
+   //    paid = msg.amount;
+   // }
+
+   // getter getPaid() returns(uint) {
+   //    return paid;
+   // }
 }
