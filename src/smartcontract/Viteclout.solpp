@@ -1,8 +1,25 @@
 pragma soliditypp ^0.4.2;
-contract Viteclout {
-   event transfer(address indexed addr,uint amount);
-     onMessage SayHello(address addr) payable {
-        addr.transfer(msg.tokenid ,msg.amount);
-        emit transfer(addr, msg.amount);
-     }
+
+contract SocialToken {
+   address public minter;
+   mapping(address => uint) public balances;
+
+   constructor() public {
+      minter = msg.sender;
+   }
+
+   onMessage mintToken(address receiver, uint amount) {
+      require(msg.sender == minter);
+      balances[receiver] += amount;
+   }
+
+   onMessage sendToken(address receiver, uint amount) {
+      require(amount <= balances[msg.sender], "Insufficient balance");
+      balances[msg.sender] -= amount;
+      balances[receiver] += amount;
+   }
+
+   getter getBalanceOf(address _address) returns(uint) {
+      return balances[_address];
+   }
 }
