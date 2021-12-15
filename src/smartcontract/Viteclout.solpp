@@ -21,21 +21,60 @@ contract VuilderToken {
 
    onMessage sendToken(
       address vuilderAddress, 
-      address receiverAddress, 
+      address receiverAddress,
+      address senderAddress,
       uint amount
    ) payable {
-      require(balances[vuilderAddress][msg.sender] >= amount, "Insufficient tokens");
+      address senderAddresss = msg.sender;
+      require(balances[vuilderAddress][senderAddresss] >= amount, "Insufficient tokens");
 
-      bool isSenderVuilder = msg.sender == vuilderAddress;
+      bool isSenderVuilder = senderAddresss == vuilderAddress;
       bool isReceiverVuilder = vuilderAddress == receiverAddress;
 
-      balances[vuilderAddress][msg.sender] -= amount;
+      require(isSenderVuilder != isReceiverVuilder, "Invalid request");
+      require(senderAddresss != receiverAddress, "Invalid request");
+
+      uint cost = getCost(amount, vuilderAddress, receiverAddress, senderAddress)*amount;
+
+      require(msg.amount == cost, "Insufficient funds");
+
+      balances[vuilderAddress][senderAddresss] -= amount;
       balances[vuilderAddress][receiverAddress] += amount;
 
-      if(isSenderVuilder && !isReceiverVuilder) {
+      if(isSenderVuilder) {
          circulatingSupply[vuilderAddress] += amount;
-      } else if(isReceiverVuilder && !isSenderVuilder) {
+      } else if(isReceiverVuilder) {
          circulatingSupply[vuilderAddress] -= amount;
       }
+   }
+
+   getter _getCost(uint amount, address vuilderAddress, address receiverAddress, address senderAddress) returns(uint) {
+      uint newCirculatingSupply = circulatingSupply[vuilderAddress];
+
+      bool isSenderVuilder = senderAddress == vuilderAddress;
+      bool isReceiverVuilder = vuilderAddress == receiverAddress;
+
+      if(isSenderVuilder && !isReceiverVuilder) {
+         newCirculatingSupply += amount;
+      } else if(isReceiverVuilder && !isSenderVuilder) {
+         newCirculatingSupply -= amount;
+      }
+
+      return  (3 * (newCirculatingSupply)**2)/1000;
+   }
+
+    function getCost(uint amount, address vuilderAddress, address receiverAddress, address senderAddress) private returns(uint) {
+      uint newCirculatingSupply = circulatingSupply[vuilderAddress];
+
+      bool isSenderVuilder = senderAddress == vuilderAddress;
+      bool isReceiverVuilder = vuilderAddress == receiverAddress;
+
+      if(isSenderVuilder && !isReceiverVuilder) {
+         newCirculatingSupply += amount;
+      } else if(isReceiverVuilder && !isSenderVuilder) {
+         newCirculatingSupply -= amount;
+      }
+
+      return  amount*(3 * (newCirculatingSupply)**2)/1000;
    }
 }
