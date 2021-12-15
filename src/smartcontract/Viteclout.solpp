@@ -1,80 +1,70 @@
 pragma soliditypp ^0.4.2;
 
 contract VuilderToken {
-   mapping(address => mapping(address => uint)) balances;
+   mapping(address => mapping(address => uint)) VFTBalance;
+   mapping(address => uint) ViteBalance;
+
    mapping(address => bool) isMinted;
    mapping(address => uint) circulatingSupply;
 
    onMessage mint() {
       require(isMinted[msg.sender] == false, "Already minted");
-      balances[msg.sender][msg.sender] = 1000;
+      VFTBalance[msg.sender][msg.sender] = 1000;
       isMinted[msg.sender] = true;
    }
 
    getter getBalance(address vuilderAddress, address inquirer) returns(uint) {
-      return balances[vuilderAddress][inquirer];
+      return VFTBalance[vuilderAddress][inquirer];
    }
    
    getter getCirculatingSupply(address vuilderAddress) returns(uint) {
       return circulatingSupply[vuilderAddress]; 
    }
 
-   onMessage sendToken(
+   onMessage sellToken(
       address vuilderAddress, 
-      address receiverAddress,
-      address senderAddress,
       uint amount
    ) payable {
-      address senderAddresss = msg.sender;
-      require(balances[vuilderAddress][senderAddresss] >= amount, "Insufficient tokens");
+      require(VFTBalance[vuilderAddress][msg.sender] >= amount, "Insufficient tokens");
 
-      bool isSenderVuilder = senderAddresss == vuilderAddress;
-      bool isReceiverVuilder = vuilderAddress == receiverAddress;
+      VFTBalance[vuilderAddress][msg.sender] -= amount;
+      VFTBalance[vuilderAddress][vuilderAddress] += amount;
 
-      require(isSenderVuilder != isReceiverVuilder, "Invalid request");
-      require(senderAddresss != receiverAddress, "Invalid request");
+      uint cost = getSellPrice(amount, vuilderAddress);
 
-      uint cost = getCost(amount, vuilderAddress, receiverAddress, senderAddress)*amount;
+      ViteBalance[vuilderAddress] -= cost;
+      msg.sender.transfer(msg.tokenid, cost);
 
-      require(msg.amount == cost, "Insufficient funds");
-
-      balances[vuilderAddress][senderAddresss] -= amount;
-      balances[vuilderAddress][receiverAddress] += amount;
-
-      if(isSenderVuilder) {
-         circulatingSupply[vuilderAddress] += amount;
-      } else if(isReceiverVuilder) {
-         circulatingSupply[vuilderAddress] -= amount;
-      }
+      circulatingSupply[vuilderAddress] += amount;
    }
 
-   getter _getCost(uint amount, address vuilderAddress, address receiverAddress, address senderAddress) returns(uint) {
-      uint newCirculatingSupply = circulatingSupply[vuilderAddress];
+    onMessage buyToken(
+      address vuilderAddress, 
+      uint amount
+   ) payable {
+      require(VFTBalance[vuilderAddress][vuilderAddress] >= amount, "Insufficient tokens");
 
-      bool isSenderVuilder = senderAddress == vuilderAddress;
-      bool isReceiverVuilder = vuilderAddress == receiverAddress;
+      uint cost = getBuyPrice(amount, vuilderAddress);
 
-      if(isSenderVuilder && !isReceiverVuilder) {
-         newCirculatingSupply += amount;
-      } else if(isReceiverVuilder && !isSenderVuilder) {
-         newCirculatingSupply -= amount;
-      }
+      require(cost == msg.amount, "Wrong amount of vite tokens sent");
 
-      return  (3 * (newCirculatingSupply)**2)/1000;
+      ViteBalance[vuilderAddress] += cost;
+
+      VFTBalance[vuilderAddress][vuilderAddress] -= amount;
+      VFTBalance[vuilderAddress][msg.sender] += amount;
+
+      circulatingSupply[vuilderAddress] += amount;
    }
 
-    function getCost(uint amount, address vuilderAddress, address receiverAddress, address senderAddress) private returns(uint) {
+   function getSellPrice(uint amount, address vuilderAddress) private returns(uint) {
       uint newCirculatingSupply = circulatingSupply[vuilderAddress];
+      newCirculatingSupply += amount;
+      return  amount*(3 * (newCirculatingSupply)**2)/1000;
+   }
 
-      bool isSenderVuilder = senderAddress == vuilderAddress;
-      bool isReceiverVuilder = vuilderAddress == receiverAddress;
-
-      if(isSenderVuilder && !isReceiverVuilder) {
-         newCirculatingSupply += amount;
-      } else if(isReceiverVuilder && !isSenderVuilder) {
-         newCirculatingSupply -= amount;
-      }
-
+   function getBuyPrice(uint amount, address vuilderAddress) private returns(uint) {
+      uint newCirculatingSupply = circulatingSupply[vuilderAddress];
+      newCirculatingSupply -= amount;
       return  amount*(3 * (newCirculatingSupply)**2)/1000;
    }
 }
