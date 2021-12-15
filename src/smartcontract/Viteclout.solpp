@@ -59,13 +59,13 @@ contract VuilderToken {
       circulatingSupply[vuilderAddress] += amount;
    }
 
-   function getSellPrice(uint amount, address vuilderAddress) private returns(uint) {
+   function getSellPrice(uint amount, address vuilderAddress) private view returns(uint) {
       uint newCirculatingSupply = circulatingSupply[vuilderAddress];
       newCirculatingSupply -= amount;
       return  decimals*amount*(3 * (newCirculatingSupply)**2)/1000;
    }
 
-   function getBuyPrice(uint amount, address vuilderAddress) private returns(uint) {
+   function getBuyPrice(uint amount, address vuilderAddress) private view returns(uint) {
       uint newCirculatingSupply = circulatingSupply[vuilderAddress];
       newCirculatingSupply += amount;
       return  decimals*amount*(3 * (newCirculatingSupply)**2)/1000;
