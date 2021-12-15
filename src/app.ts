@@ -14,16 +14,28 @@ import path from 'path';
 
 require("dotenv").config();
 
+const cors = require('cors')
+
 const { PORT } = config;
 
 // Create express app
 const app = express();
 
 // Middlewares
+app.use(
+  cors({
+    origin: 'http://localhost:3000',
+  })
+)
+
 app.use(express.json())
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(session({ secret: process.env.SESSION_SECRET as string }));
+app.use(session({ 
+  secret: process.env.SESSION_SECRET as string, 
+  resave: true, 
+  saveUninitialized: true 
+}));
 
 // PROFILE PICTURE UPLOAD
 app.use("/images", express.static(path.join(__dirname, "/images")))

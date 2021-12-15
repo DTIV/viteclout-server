@@ -1,8 +1,6 @@
 import mongoose from "mongoose";
 import config from "../config";
 
-
-
 const { MONGO_DB_URL } = config;
 
 const connectToDB = async () => {
