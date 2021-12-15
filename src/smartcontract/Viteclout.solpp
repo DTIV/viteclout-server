@@ -6,6 +6,7 @@ contract VuilderToken {
 
    mapping(address => bool) isMinted;
    mapping(address => uint) circulatingSupply;
+   uint decimals = 1000000000000000000;
 
    onMessage mint() {
       require(isMinted[msg.sender] == false, "Already minted");
@@ -26,6 +27,7 @@ contract VuilderToken {
       uint amount
    ) payable {
       require(VFTBalance[vuilderAddress][msg.sender] >= amount, "Insufficient tokens");
+      require(msg.sender != vuilderAddress, "Invalid request");
 
       VFTBalance[vuilderAddress][msg.sender] -= amount;
       VFTBalance[vuilderAddress][vuilderAddress] += amount;
@@ -43,6 +45,7 @@ contract VuilderToken {
       uint amount
    ) payable {
       require(VFTBalance[vuilderAddress][vuilderAddress] >= amount, "Insufficient tokens");
+      require(msg.sender != vuilderAddress, "Invalid request");
 
       uint cost = getBuyPrice(amount, vuilderAddress);
 
@@ -59,12 +62,24 @@ contract VuilderToken {
    function getSellPrice(uint amount, address vuilderAddress) private returns(uint) {
       uint newCirculatingSupply = circulatingSupply[vuilderAddress];
       newCirculatingSupply += amount;
-      return  amount*(3 * (newCirculatingSupply)**2)/1000;
+      return  decimals*amount*(3 * (newCirculatingSupply)**2)/1000;
    }
 
    function getBuyPrice(uint amount, address vuilderAddress) private returns(uint) {
       uint newCirculatingSupply = circulatingSupply[vuilderAddress];
       newCirculatingSupply -= amount;
-      return  amount*(3 * (newCirculatingSupply)**2)/1000;
+      return  decimals*amount*(3 * (newCirculatingSupply)**2)/1000;
+   }
+
+   getter _getSellPrice(uint amount, address vuilderAddress) returns(uint) {
+      uint newCirculatingSupply = circulatingSupply[vuilderAddress];
+      newCirculatingSupply += amount;
+      return  decimals*amount*(3 * (newCirculatingSupply)**2)/1000;
+   }
+
+   getter _getBuyPrice(uint amount, address vuilderAddress) returns(uint) {
+      uint newCirculatingSupply = circulatingSupply[vuilderAddress];
+      newCirculatingSupply -= amount;
+      return  decimals*amount*(3 * (newCirculatingSupply)**2)/1000;
    }
 }
