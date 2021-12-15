@@ -12,6 +12,9 @@ import passport from "passport";
 import multer from "multer";
 import path from 'path';
 
+
+// TODO: ADD TWITTER ENDPOINTS TO CALL API FROM BACKEND
+
 require("dotenv").config();
 
 const cors = require('cors')
@@ -25,6 +28,7 @@ const app = express();
 app.use(
   cors({
     origin: 'http://localhost:3000',
+    credentials: true
   })
 )
 
@@ -36,6 +40,11 @@ app.use(session({
   resave: true, 
   saveUninitialized: true 
 }));
+
+// Initalising passport twitter
+app.use(passport.initialize());
+app.use(passport.session());
+intitPassportTwitter();
 
 // PROFILE PICTURE UPLOAD
 app.use("/images", express.static(path.join(__dirname, "/images")))
@@ -54,17 +63,18 @@ app.post("/upload", upload.single("file"), (req,res) => {
   res.status(200).json("File uploaded successfully!")
 })
 
+// Get authenticated user
+app.get("/getuser", (req, res) => {
+  res.send(req.user)
+})
+
 // Registering routes
 app.use("/user", userRouter);
 app.use("/auth", authRouter);
 app.use("/token", tokenRouter);
 app.use("", healthRouter);
 
-// Initalising passport twitter
-app.use(passport.initialize());
-app.use(passport.session());
 
-intitPassportTwitter();
 
 // Connecting to MongoDB
 const bootstrap = async () => {

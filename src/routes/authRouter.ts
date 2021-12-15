@@ -3,13 +3,12 @@ import passport from "passport";
 
 const router = express.Router();
 
-router.get("/twitter", passport.authenticate("twitter"));
+router.get("/twitter", passport.authenticate("twitter", {scope: ['profile']}));
 
-router.get(
-  "/twitter/callback",
+router.get("/twitter/callback",
   passport.authenticate("twitter", { 
-    failureRedirect: "/login",
-    // successRedirect: '/',
+    failureRedirect: "/login", 
+    successRedirect: 'http://localhost:3000/'
   })
 );
 
