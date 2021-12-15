@@ -1,79 +1,85 @@
 pragma soliditypp ^0.4.2;
 
 contract VuilderToken {
-   address public vuilder;
-   mapping(address => uint) public balances;
-   uint circulatingSupply = 0;
+   mapping(address => mapping(address => uint)) VFTBalance;
+   mapping(address => uint) ViteBalance;
+
+   mapping(address => bool) isMinted;
+   mapping(address => uint) circulatingSupply;
    uint decimals = 1000000000000000000;
-   // uint paid = 0;
 
-   constructor() public {
-      vuilder = msg.sender;
-      balances[vuilder] = 1000 * decimals;
+   onMessage mint() {
+      require(isMinted[msg.sender] == false, "Already minted");
+      VFTBalance[msg.sender][msg.sender] = 1000;
+      isMinted[msg.sender] = true;
    }
 
-   getter getPrice(uint amount, address receiver, address sender) returns(uint) {
-     if(circulatingSupply==0) {
-         return (decimals * 3)/1000;
-      }
-
-      uint newCirculatingSupply = circulatingSupply;
-
-      if(sender == vuilder && receiver!= vuilder) {
-         newCirculatingSupply += amount;
-      } else if(receiver == vuilder && sender != vuilder) {
-         newCirculatingSupply -= amount;
-      }
-
-      return  (3 * (newCirculatingSupply)**2)/1000;
+   getter getBalance(address vuilderAddress, address inquirer) returns(uint) {
+      return VFTBalance[vuilderAddress][inquirer];
+   }
+   
+   getter getCirculatingSupply(address vuilderAddress) returns(uint) {
+      return circulatingSupply[vuilderAddress]; 
    }
 
-   onMessage sendToken(address receiver, uint amount) payable {
-      require(amount <= balances[msg.sender], "Insufficient balance");
-      // Enforces the price of token
-      require(msg.amount == _getPrice(amount, receiver, msg.sender));
+   onMessage sellToken(
+      address vuilderAddress, 
+      uint amount
+   ) payable {
+      require(VFTBalance[vuilderAddress][msg.sender] >= amount, "Insufficient tokens");
+      require(msg.sender != vuilderAddress, "Invalid request");
 
-      balances[msg.sender] -= amount;
-      balances[receiver] += amount;
+      VFTBalance[vuilderAddress][msg.sender] -= amount;
+      VFTBalance[vuilderAddress][vuilderAddress] += amount;
 
-      if(msg.sender == vuilder && receiver!= vuilder) {
-         circulatingSupply += amount;
-      } else if(receiver == vuilder && msg.sender != vuilder) {
-         circulatingSupply -= amount;
-      }
+      uint cost = getSellPrice(amount, vuilderAddress);
+
+      ViteBalance[vuilderAddress] -= cost;
+      msg.sender.transfer(msg.tokenid, cost);
+
+      circulatingSupply[vuilderAddress] += amount;
    }
 
-   getter getBalanceOf(address _address) returns(uint) {
-      return balances[_address];
+    onMessage buyToken(
+      address vuilderAddress, 
+      uint amount
+   ) payable {
+      require(VFTBalance[vuilderAddress][vuilderAddress] >= amount, "Insufficient tokens");
+      require(msg.sender != vuilderAddress, "Invalid request");
+
+      uint cost = getBuyPrice(amount, vuilderAddress);
+
+      require(cost == msg.amount, "Wrong amount of vite tokens sent");
+
+      ViteBalance[vuilderAddress] += cost;
+
+      VFTBalance[vuilderAddress][vuilderAddress] -= amount;
+      VFTBalance[vuilderAddress][msg.sender] += amount;
+
+      circulatingSupply[vuilderAddress] += amount;
    }
 
-   getter getCirculatingSupply() returns(uint) {
-      return circulatingSupply;
+   function getSellPrice(uint amount, address vuilderAddress) private view returns(uint) {
+      uint newCirculatingSupply = circulatingSupply[vuilderAddress];
+      newCirculatingSupply -= amount;
+      return  decimals*amount*(3 * (newCirculatingSupply)**2)/1000;
    }
 
-   function _getPrice(uint amount, address receiver, address sender) private returns(uint) {
-      if(circulatingSupply==0) {
-         return (decimals * 3)/1000;
-      }
-
-      uint newCirculatingSupply = circulatingSupply;
-
-      if(sender == vuilder && receiver!= vuilder) {
-         newCirculatingSupply += amount;
-      } else if(receiver == vuilder && sender != vuilder) {
-         newCirculatingSupply -= amount;
-      }
-
-      require(newCirculatingSupply !=0);
-
-      return  (3 * (newCirculatingSupply)**2)/1000;
+   function getBuyPrice(uint amount, address vuilderAddress) private view returns(uint) {
+      uint newCirculatingSupply = circulatingSupply[vuilderAddress];
+      newCirculatingSupply += amount;
+      return  decimals*amount*(3 * (newCirculatingSupply)**2)/1000;
    }
 
-   // onMessage pay() payable {
-   //    paid = msg.amount;
-   // }
+   getter _getSellPrice(uint amount, address vuilderAddress) returns(uint) {
+      uint newCirculatingSupply = circulatingSupply[vuilderAddress];
+      newCirculatingSupply -= amount;
+      return  decimals*amount*(3 * (newCirculatingSupply)**2)/1000;
+   }
 
-   // getter getPaid() returns(uint) {
-   //    return paid;
-   // }
+   getter _getBuyPrice(uint amount, address vuilderAddress) returns(uint) {
+      uint newCirculatingSupply = circulatingSupply[vuilderAddress];
+      newCirculatingSupply += amount;
+      return  decimals*amount*(3 * (newCirculatingSupply)**2)/1000;
+   }
 }
