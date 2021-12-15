@@ -13,7 +13,7 @@ router.get("/height", async (req, res) => {
 
 router.get("/add", async (req, res) => {
   try {
-    const result = await viteController.createToken();
+    const result = await viteController.deployTokenContract();
     return res.status(201).send(result);
   } catch (err) {
     console.log(err);

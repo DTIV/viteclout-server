@@ -2,6 +2,7 @@
 import { WS_RPC } from "@vite/vitejs-ws";
 import { ViteAPI, accountBlock } from "@vite/vitejs";
 import config from "../../config";
+import { abi, code } from "./vuilderTokenAbi";
 
 const { createAccountBlock } = accountBlock;
 const { RPC_URL, CONTRACT_ADDRESS } = config;
@@ -18,30 +19,26 @@ export const getSnapshotChainHeight = async () => {
     };
   } catch (err) {
     console.log("Error while retrieving snapshot chain height");
-    console.log(err);
+    return err;
   }
 };
 
-export const createToken = async () => {
+export const deployTokenContract = async () => {
+  const accountBlock = createAccountBlock("createContract", {
+    address: CONTRACT_ADDRESS,
+    abi,
+    code,
+    responseLatency: 2,
+  });
+  console.log(accountBlock);
   try {
-    const accountBlock = createAccountBlock("issueToken", {
-      address: CONTRACT_ADDRESS,
-      tokenName: "TestToken2",
-      isReIssuable: true,
-      maxSupply: "1000000000000000000000000",
-      isOwnerBurnOnly: false,
-      totalSupply: "10000000000000000000000",
-      decimals: 3,
-      tokenSymbol: "TTK2",
-    });
-    return accountBlock.tokenId;
   } catch (err) {
     console.log("Error while retrieving snapshot chain height");
-    console.log(err);
+    return err;
   }
 };
 
 export default {
   getSnapshotChainHeight,
-  createToken,
+  deployTokenContract,
 };
