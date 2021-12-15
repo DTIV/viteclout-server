@@ -12,6 +12,9 @@ import passport from "passport";
 import multer from "multer";
 import path from 'path';
 
+
+// TODO: ADD TWITTER ENDPOINTS TO CALL API FROM BACKEND
+
 require("dotenv").config();
 
 const cors = require('cors')

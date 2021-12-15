@@ -63,3 +63,10 @@ Routes folder contains API call endpoints for predefined routes in App.ts, some 
 -----
 
 Used to Connect to the local MongoDB server
+
+
+### SmartContract
+
+-------
+
+The folder where the ViteClout Smart Contract written in Solidity++ is locatated.
