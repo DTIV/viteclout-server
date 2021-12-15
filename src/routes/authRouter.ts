@@ -8,8 +8,10 @@ router.get("/twitter", passport.authenticate("twitter", {scope: ['profile']}));
 router.get("/twitter/callback",
   passport.authenticate("twitter", { 
     failureRedirect: "/login", 
-    successRedirect: 'http://localhost:3000/'
+    successRedirect: 'http://localhost:3000/auth/viteconnect'
   })
 );
+
+
 
 export default router;

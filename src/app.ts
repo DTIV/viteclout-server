@@ -6,12 +6,11 @@ import bodyParser from "body-parser";
 import authRouter from "./routes/authRouter";
 import healthRouter from "./routes/healthRouter";
 import tokenRouter from "./routes/tokenRouter";
-import { intitPassportTwitter } from "./controller/auth/passportTwitter";
 import session from "express-session";
 import passport from "passport";
 import multer from "multer";
 import path from 'path';
-
+import { intitPassportTwitter } from "./controller/auth/passportTwitter";
 
 // TODO: ADD TWITTER ENDPOINTS TO CALL API FROM BACKEND
 
@@ -63,18 +62,24 @@ app.post("/upload", upload.single("file"), (req,res) => {
   res.status(200).json("File uploaded successfully!")
 })
 
-// Get authenticated user
+// LOGIN
 app.get("/getuser", (req, res) => {
   res.send(req.user)
 })
+
+// LOGOUT
+app.get("/logout",(req, res) => {
+  if(req.user){
+    req.logout();
+    res.send("Logged Out Successfully!")
+  }
+});
 
 // Registering routes
 app.use("/user", userRouter);
 app.use("/auth", authRouter);
 app.use("/token", tokenRouter);
 app.use("", healthRouter);
-
-
 
 // Connecting to MongoDB
 const bootstrap = async () => {

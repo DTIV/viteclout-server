@@ -7,6 +7,11 @@ const userSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    twitterIdNumber: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     isVuilder: {
       type: Boolean,
       default: false,

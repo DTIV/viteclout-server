@@ -1,30 +1,29 @@
 import express from "express";
 import User from "../../models/user";
 
-export const findOrCreate = async (twitterId: string) => {
+export const findOrCreate = async (twitterId: string, twitterIdNumber: string) => {
   try {
-    const res = await User.find({
-      twitterId,
-    });
-    if (res) {
+    const res = await User.find({ twitterId : twitterId });
+    if (res.length) {
       return res;
     } else {
-      const newUser = new User({
+      const newUser = await new User({
         twitterId,
-        description: "",
+        twitterIdNumber
       });
       const res = await newUser.save();
-      return res._id;
+      return res;
     }
   } catch (err) {
-    console.log("Error while adding to db");
+    console.log("Error while adding to db", err);
   }
 };
 
-export const addUser = async (twitterId: string, isVuilder: boolean, profilePic: string, header: string, blog: string, github: string) => {
+export const addUser = async (twitterId: string, twitterIdNumber:string, isVuilder: boolean, profilePic: string, header: string, blog: string, github: string) => {
   try {
     const newUser = new User({
       twitterId,
+      twitterIdNumber,
       isVuilder,
       profilePic,
       header,
