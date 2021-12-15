@@ -61,25 +61,25 @@ contract VuilderToken {
 
    function getSellPrice(uint amount, address vuilderAddress) private returns(uint) {
       uint newCirculatingSupply = circulatingSupply[vuilderAddress];
-      newCirculatingSupply += amount;
+      newCirculatingSupply -= amount;
       return  decimals*amount*(3 * (newCirculatingSupply)**2)/1000;
    }
 
    function getBuyPrice(uint amount, address vuilderAddress) private returns(uint) {
       uint newCirculatingSupply = circulatingSupply[vuilderAddress];
-      newCirculatingSupply -= amount;
+      newCirculatingSupply += amount;
       return  decimals*amount*(3 * (newCirculatingSupply)**2)/1000;
    }
 
    getter _getSellPrice(uint amount, address vuilderAddress) returns(uint) {
       uint newCirculatingSupply = circulatingSupply[vuilderAddress];
-      newCirculatingSupply += amount;
+      newCirculatingSupply -= amount;
       return  decimals*amount*(3 * (newCirculatingSupply)**2)/1000;
    }
 
    getter _getBuyPrice(uint amount, address vuilderAddress) returns(uint) {
       uint newCirculatingSupply = circulatingSupply[vuilderAddress];
-      newCirculatingSupply -= amount;
+      newCirculatingSupply += amount;
       return  decimals*amount*(3 * (newCirculatingSupply)**2)/1000;
    }
 }
