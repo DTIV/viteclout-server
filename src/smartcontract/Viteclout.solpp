@@ -8,7 +8,7 @@ contract VuilderToken {
    mapping(address => uint) circulatingSupply;
    uint decimals = 1000000000000000000;
 
-   onMessage mint() {
+   onMessage mint(uint256 dummy) {
       require(isMinted[msg.sender] == false, "Already minted");
       VFTBalance[msg.sender][msg.sender] = 1000;
       isMinted[msg.sender] = true;

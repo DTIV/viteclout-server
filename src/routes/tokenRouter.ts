@@ -16,8 +16,16 @@ router.get("/add", async (req, res) => {
     const result = await viteController.deployTokenContract();
     return res.status(201).send(result);
   } catch (err) {
-    console.log(err);
+    console.log(err)
   }
 });
+
+router.get("/call", async (req, res) => {
+  try{
+    console.log("call")
+  }catch (err) {
+    console.log(err)
+  }
+})
 
 export default router;
