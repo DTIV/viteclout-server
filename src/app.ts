@@ -71,7 +71,7 @@ app.get("/getuser", (req, res) => {
 app.get("/logout",(req, res) => {
   if(req.user){
     req.logout();
-    res.send("Logged Out Successfully!")
+    res.send("loggedout")
   }
 });
 
