@@ -7,13 +7,15 @@ import userController from "../user/userController";
 export const intitPassportTwitter = () => {
   //serialize user to current session
   //https://stackoverflow.com/questions/27637609/understanding-passport-serialize-deserialize
+
   passport.serializeUser((user: any, done: any) => {
-    return done(null, user);
+    return done(null, user._id);
   })
 
-  // !!! DO NOT RETURN ENTIRE USER OBJECT  !!!!
-  passport.deserializeUser((user: any, done: any) => {
-    return done(null, user);
+  passport.deserializeUser((id: string, done: any) => {
+    User.findById(id, (err: Error, doc: any) => {
+      return done(null, doc);
+    })
   })
 
   passport.use(  
@@ -24,9 +26,21 @@ export const intitPassportTwitter = () => {
         callbackURL: "/auth/twitter/callback",
       },
       function (token, tokenSecret, profile, cb) {
-        console.log(profile)
-        cb(null, profile)
-        // userController.findOrCreate(profile.id);
+        User.findOne({twitterId: profile.username}, async (err:Error, doc: any) => {
+          if(err){ 
+            return cb(err, null)
+          }
+          if(!doc){
+            const newUser = userController.findOrCreate(profile.username, profile.id);
+            // doc object gets sent to serializer
+            cb(null, newUser)
+          }
+          // doc object gets sent to serializer
+          console.log("DOC",doc)
+          cb(null, doc)
+        })
+        
+        
       }
     )
   );

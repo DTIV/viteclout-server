@@ -7,9 +7,9 @@ const router = express.Router();
 // ADD USER
 router.post("/add", async (req, res) => {
   try {
-    const { twitterId, isVuilder, profilePic, header, blog, github } = req.body;
+    const { twitterId, twitterIdNumber, isVuilder, profilePic, header, blog, github } = req.body;
     console.log(req.body)
-    const id = await userController.addUser(twitterId, isVuilder, profilePic, header, blog, github);
+    const id = await userController.addUser(twitterId, twitterIdNumber,isVuilder, profilePic, header, blog, github);
     return res.status(201).send(id);
   } catch (err) {
     console.log(err);
@@ -17,7 +17,7 @@ router.post("/add", async (req, res) => {
 });
 
 // GET ALL USERS
-router.get('/list', function (req, res) {
+router.get('/list', function (req, res) { 
   User.find({}, function (err, users) {
     if(!err){
       res.json(users)
