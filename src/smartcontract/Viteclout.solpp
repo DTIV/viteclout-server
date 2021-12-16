@@ -8,7 +8,9 @@ contract VuilderToken {
    mapping(address => uint) circulatingSupply;
    uint decimals = 1000000000000000000;
 
-   onMessage mint(uint256 dummy) {
+   event myStringLog(address indexed addr, string log);
+   event myUintLog(address indexed addr, uint log);
+   onMessage mint() {
       require(isMinted[msg.sender] == false, "Already minted");
       VFTBalance[msg.sender][msg.sender] = 1000;
       isMinted[msg.sender] = true;
@@ -20,6 +22,10 @@ contract VuilderToken {
    
    getter getCirculatingSupply(address vuilderAddress) returns(uint) {
       return circulatingSupply[vuilderAddress]; 
+   }
+
+   onMessage emitCirculatingSupply(address vuilderAddress) {
+      emit myUintLog(vuilderAddress, circulatingSupply[vuilderAddress]);
    }
 
    onMessage sellToken(
