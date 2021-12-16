@@ -12,7 +12,7 @@ const { Contracts, Vite_TokenId } = constant;
 const seed = "want topic together book banana inherit health chunk hard solve fetch tag devote grain aisle spring tube coil state orchard crowd write horn humble";
 
 // Connect to node
-let WS_service = new WS_RPC(RPC_URL);
+let WS_service = new WS_RPC("wss://buidl.vite.net/gvite/ws");
 let provider = new ViteAPI(WS_service, () => {
   console.log("Connected");
 });
@@ -26,10 +26,10 @@ const CONTRACT = {
   binary: '608060405234801561001057600080fd5b50610141806100206000396000f3fe608060405260043610610041576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806391a6cb4b14610046575b600080fd5b6100896004803603602081101561005c57600080fd5b81019080803574ffffffffffffffffffffffffffffffffffffffffff16906020019092919050505061008b565b005b8074ffffffffffffffffffffffffffffffffffffffffff164669ffffffffffffffffffff163460405160405180820390838587f1505050508074ffffffffffffffffffffffffffffffffffffffffff167faa65281f5df4b4bd3c71f2ba25905b907205fce0809a816ef8e04b4d496a85bb346040518082815260200191505060405180910390a25056fea165627a7a7230582095190ce167757b6308031ed4b9893929f96d866542f660a6918457a96dac7d870029',    // binary code
   abi: [{"constant":false,"inputs":[{"name":"addr","type":"address"}],"name":"sayHello","outputs":[],"payable":true,"stateMutability":"payable","type":"function"},{"anonymous":false,"inputs":[{"indexed":true,"name":"addr","type":"address"},{"indexed":false,"name":"amount","type":"uint256"}],"name":"transfer","type":"event"}],                    // JSON ABI
   offChain: '',  // binary offchain code
-  address: '',   // contract address
+  address: 'vite_8b624a79672e2f49732935bb19420324c9021236bf28e8de62',   // contract address
 }
 
-CONTRACT.address = 'vite_c1905cc76eaa02c02c564b2afa0639fab53a303cbef0599bd2';
+CONTRACT.address = 'vite_8b624a79672e2f49732935bb19420324c9021236bf28e8de62';
 
 async function receiveTransaction(account:any) {
   // get the first unreceived tx
